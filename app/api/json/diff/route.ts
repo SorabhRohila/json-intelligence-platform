@@ -60,31 +60,37 @@ function compareJson(
 
   if (isPlainObject(left) && isPlainObject(right)) {
     const allKeys = Array.from(
-      new Set([...Object.keys(left), ...Object.keys(right)])
+      new Set([...Object.keys(left as Record<string, any>), ...Object.keys(right as Record<string, any>)])
     );
 
     for (const key of allKeys) {
       const nextPath = `${currentPath}.${key}`;
 
-      if (!(key in left)) {
+      if (!(key in (left as Record<string, any>))) {
         diffs.push({
           path: nextPath,
           type: "added",
-          rightValue: right[key],
+          rightValue: (right as Record<string, any>)[key],
         });
         continue;
       }
 
-      if (!(key in right)) {
+      if (!(key in (right as Record<string, any>))) {
         diffs.push({
           path: nextPath,
           type: "removed",
-          leftValue: left[key],
+          leftValue: (left as Record<string, any>)[key],
         });
         continue;
       }
 
-      diffs.push(...compareJson(left[key], right[key], nextPath));
+      diffs.push(
+  ...compareJson(
+    (left as Record<string, any>)[key],
+    (right as Record<string, any>)[key],
+    nextPath
+  )
+);
     }
 
     return diffs;

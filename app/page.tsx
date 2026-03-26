@@ -131,7 +131,7 @@ export default function HomePage() {
   const [isTreeMode, setIsTreeMode] = useState(false);
   const [status, setStatus] = useState<{ text: string; type: "default" | "success" | "error" }>({ text: "Ready", type: "default" });
   const currentJSONRef = useRef<unknown>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function parseInput(raw = inputVal) {
     const trimmed = raw.trim();
@@ -218,7 +218,9 @@ export default function HomePage() {
 
   function handleInputChange(val: string) {
     setInputVal(val);
-    clearTimeout(debounceRef.current);
+    if (debounceRef.current) {
+  clearTimeout(debounceRef.current);
+}
     debounceRef.current = setTimeout(() => parseInput(val), 300);
   }
 
